@@ -75,8 +75,8 @@ export default function ImageGenerator() {
     setIsGenerating(true);
     try {
       const input = activeInput === "text" ? inputText : (uploadedImage || "");
-      const result = await generateImage(selectedStyle, input, settings);
-      setGeneratedImage(result.imageUrl); 
+      const result = await generateImage(selectedStyle, input, inputText, settings);
+      setGeneratedImage(result.imageUrl);
     } catch (error) {
       toast({
         title: "Generation failed",

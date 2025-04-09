@@ -1,11 +1,11 @@
 import type { Settings } from "@/types"
 
-export async function generateImage(styleId: string, uploadedImage: string, settings: Settings) {
+export async function generateImage(styleId: string, uploadedImage: string, textPrompt: string, settings: Settings) {
   try {
     if (settings.provider === "pollinations") {
-      return await generateWithPollinations(styleId, uploadedImage, settings)
+      return await generateWithPollinations(styleId, uploadedImage, textPrompt, settings)
     } else if (settings.provider === "gemini") {
-      return await generateWithGemini(styleId, uploadedImage, settings)
+      return await generateWithGemini(styleId, uploadedImage, textPrompt, settings)
     } else {
       throw new Error(`Unsupported provider: ${settings.provider}`)
     }
@@ -15,18 +15,18 @@ export async function generateImage(styleId: string, uploadedImage: string, sett
   }
 }
 
-async function generateWithPollinations(styleId: string, uploadedImage: string, settings: Settings) {
+async function generateWithPollinations(styleId: string, uploadedImage: string, textPrompt: string, settings: Settings) {
   // We need to call our server action to handle the API call
-  return await callPollinationsAPI(styleId, uploadedImage, settings)
+  return await callPollinationsAPI(styleId, uploadedImage, textPrompt, settings)
 }
 
-async function generateWithGemini(styleId: string, uploadedImage: string, settings: Settings) {
+async function generateWithGemini(styleId: string, uploadedImage: string, textPrompt: string, settings: Settings) {
   // We need to call our server action to handle the API call
-  return await callGeminiAPI(styleId, uploadedImage, settings)
+  return await callGeminiAPI(styleId, uploadedImage, textPrompt, settings)
 }
 
 // These functions will call our server actions
-async function callPollinationsAPI(styleId: string, uploadedImage: string, settings: Settings) {
+async function callPollinationsAPI(styleId: string, uploadedImage: string, textPrompt: string, settings: Settings) {
   try {
     const response = await fetch("/api/generate-pollinations", {
       method: "POST",
@@ -36,6 +36,7 @@ async function callPollinationsAPI(styleId: string, uploadedImage: string, setti
       body: JSON.stringify({
         styleId,
         uploadedImage,
+        textPrompt,
         apiKey: settings.apiKey,
         model: settings.model,
       }),
@@ -58,13 +59,15 @@ async function callPollinationsAPI(styleId: string, uploadedImage: string, setti
   }
 }
 
-async function callGeminiAPI(styleId: string, uploadedImage: string, settings: Settings) {
+async function callGeminiAPI(styleId: string, uploadedImage: string, textPrompt: string, settings: Settings) {
   try {
     // For debugging, log what we're sending to the API
     console.log("Calling Gemini API with:", {
       styleId,
+      uploadedImage,
+      textPrompt,
+      apiKey: settings.apiKey,
       model: settings.model,
-      apiKeyProvided: !!settings.apiKey,
     })
 
     const response = await fetch("/api/generate-gemini", {
@@ -75,6 +78,7 @@ async function callGeminiAPI(styleId: string, uploadedImage: string, settings: S
       body: JSON.stringify({
         styleId,
         uploadedImage,
+        textPrompt,
         apiKey: settings.apiKey,
         model: settings.model,
       }),

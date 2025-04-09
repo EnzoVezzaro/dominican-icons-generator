@@ -4,7 +4,7 @@ import { GoogleGenAI } from "@google/genai";
 
 export async function POST(request: NextRequest) {
   try {
-    const { styleId, uploadedImage, apiKey, model } = await request.json()
+    const { styleId, uploadedImage, apiKey, model, textPrompt } = await request.json()
 
     if (!apiKey) {
       return NextResponse.json({ error: "API key is required" }, { status: 400 })
@@ -12,33 +12,28 @@ export async function POST(request: NextRequest) {
 
     const ai = new GoogleGenAI({ apiKey: apiKey });
 
-    if (!uploadedImage) {
-      return NextResponse.json({ error: "Uploaded image or text prompt is required" }, { status: 400 })
-    }
-
-    // Generate prompt based on style
     let prompt = ""
-    switch (styleId) {
-      case "cartoon-cat":
-        prompt = "A cute cartoon cat style image"
-        break
-      case "pixel-art":
-        prompt = "A pixel art style image"
-        break
-      case "watercolor":
-        prompt = "A watercolor painting style image"
-        break
-      case "3d-render":
-        prompt = "A 3D rendered style image"
-        break
-      default:
-        prompt = "A stylized image"
-    }
+    let contents;
 
-    // Since we can't directly use the uploaded image with Gemini's image generation yet,
-    // we'll just generate an image based on the prompt
-    try {
-      console.log('calling gemini...')
+    if (!textPrompt) {
+      // Generate prompt based on style
+      switch (styleId) {
+        case "cartoon-cat":
+          prompt = "A cute cartoon cat style image"
+          break
+        case "pixel-art":
+          prompt = "A pixel art style image"
+          break
+        case "watercolor":
+          prompt = "A watercolor painting style image"
+          break
+        case "3d-render":
+          prompt = "A 3D rendered style image"
+          break
+        default:
+          prompt = "A stylized image"
+      }
+
       let base64Data = uploadedImage;
       let mimeType = 'image/png'; // Default MIME type
       if (uploadedImage.startsWith('data:image/png;base64,')) {
@@ -61,8 +56,8 @@ export async function POST(request: NextRequest) {
         return NextResponse.json({ error: "Invalid base64 encoded image data." }, { status: 400 });
       }
 
-      const contents = [
-        { text: `Make this image into a ${styleId} with the following instructions: ${prompt}. High quality, detailed image.` },
+      contents = [
+        { text: `Change this image with the following instructions: ${prompt}.` },
         {
           inlineData: {
             mimeType: mimeType,
@@ -70,7 +65,17 @@ export async function POST(request: NextRequest) {
           },
         },
       ];
-      // console.log('calling imagen...', contents)
+    } else if (textPrompt) {
+      prompt = textPrompt;
+      contents = [{ text: prompt }];
+    } else {
+      return NextResponse.json({ error: "Uploaded image or text prompt is required" }, { status: 400 })
+    }
+
+    // Since we can't directly use the uploaded image with Gemini's image generation yet,
+    // we'll just generate an image based on the prompt
+    try {
+      console.log('calling gemini...: ', contents)
       const response = await ai.models.generateContent({
         model: model === "imagen-3" ? "gemini-2.0-flash-exp-image-generation" : model,
         contents: contents,
