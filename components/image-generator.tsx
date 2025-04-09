@@ -3,8 +3,9 @@
 import type React from "react"
 
 import { useState, useCallback } from "react"
-import { PlusIcon, EqualIcon as Equals, RefreshCw, Upload } from "lucide-react"
+import { PlusIcon, EqualIcon as Equals, RefreshCw, Upload, Text } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import { Textarea } from "@/components/ui/textarea"
 import StyleSelector from "@/components/style-selector"
 import { useToast } from "@/components/ui/use-toast"
 import { useSettings } from "@/hooks/use-settings"
@@ -19,6 +20,8 @@ export default function ImageGenerator() {
   const [uploadedImage, setUploadedImage] = useState<string | null>(null)
   const [generatedImage, setGeneratedImage] = useState<string | null>(null)
   const [isGenerating, setIsGenerating] = useState(false)
+  const [activeInput, setActiveInput] = useState<"text" | "upload" | null>(null);
+  const [inputText, setInputText] = useState<string>("");
   const { toast } = useToast()
   const { settings } = useSettings()
   const { items: savedImages, addItem: saveImage } = useLocalStorage<ImageData[]>("saved-images", [])
@@ -51,13 +54,13 @@ export default function ImageGenerator() {
   )
 
   const handleGenerate = useCallback(async () => {
-    if (!selectedStyle || !uploadedImage) {
+    if (!selectedStyle || (!uploadedImage && activeInput === "upload") || (!inputText && activeInput === "text")) {
       toast({
         title: "Missing selection",
-        description: "Please select a style and upload an image",
+        description: "Please select a style and provide an image or text",
         variant: "destructive",
       })
-      return
+      return;
     }
 
     if (!settings.apiKey) {
@@ -69,20 +72,21 @@ export default function ImageGenerator() {
       return
     }
 
-    setIsGenerating(true)
+    setIsGenerating(true);
     try {
-      const result = await generateImage(selectedStyle, uploadedImage, settings)
-      setGeneratedImage(result.imageUrl)
+      const input = activeInput === "text" ? inputText : (uploadedImage || "");
+      const result = await generateImage(selectedStyle, input, settings);
+      setGeneratedImage(result.imageUrl);
     } catch (error) {
       toast({
         title: "Generation failed",
         description: error instanceof Error ? error.message : "Unknown error occurred",
         variant: "destructive",
-      })
+      });
     } finally {
-      setIsGenerating(false)
+      setIsGenerating(false);
     }
-  }, [selectedStyle, uploadedImage, settings, toast])
+  }, [selectedStyle, uploadedImage, inputText, activeInput, settings, toast]);
 
   const handleSaveImage = useCallback(() => {
     if (generatedImage) {
@@ -118,6 +122,8 @@ export default function ImageGenerator() {
     }
   }, [isGenerating, uploadedImage, selectedStyle, generatedImage, handleGenerate, handleReset])
 
+  console.log('active: ', activeInput);
+
   return (
     <div className="flex flex-col items-center justify-center w-full">
       <div className="text-center mb-12">
@@ -152,8 +158,8 @@ export default function ImageGenerator() {
 
           <div className="flex flex-col items-center">
             <div
-              className="w-full aspect-square bg-red-500 rounded-full flex items-center justify-center overflow-hidden border-2 border-dashed border-gray-400"
-              style={{ minHeight: "150px", maxWidth: "150px" }}
+              className={`w-full aspect-square bg-red-500 flex items-center justify-center overflow-hidden border-2 border-dashed border-gray-400`}
+              style={{ minHeight: "150px", maxWidth: "150px", flexDirection: 'column' }}
             >
               {uploadedImage ? (
                 <img
@@ -162,16 +168,39 @@ export default function ImageGenerator() {
                   className="w-full h-full object-cover"
                 />
               ) : (
-                <div className="flex flex-col items-center justify-center p-4 text-center relative">
-                  <Upload className="mb-2 text-white" />
-                  <p className="text-white text-sm">AGGIUNGI LA TUA IMMAGINE</p>
-                  <input
-                    type="file"
-                    accept="image/*"
-                    onChange={handleImageUpload}
-                    className="absolute inset-0 opacity-0 cursor-pointer"
-                  />
-                </div>
+                <>
+                  {
+                    (activeInput === null || activeInput === 'text') &&
+                    <Textarea
+                      placeholder="Enter your text"
+                      className={`w-full h-32`}
+                      onClick={() => setActiveInput("text")}
+                      value={inputText}
+                      onChange={(e) => {
+                        if (!e.target.value){
+                          setActiveInput(null)
+                          setInputText(e.target.value)
+                        } else {
+                          setActiveInput("text")
+                          setInputText(e.target.value)
+                        }
+                      }}
+                    />
+                  }
+                  {
+                    (activeInput === null ||  activeInput === 'upload') &&
+                    <div className="flex flex-col items-center justify-center p-4 text-center relative">
+                      <Upload className="mb-2 text-white" /> 
+                      <p className="text-white text-sm">AGGIUNGI LA TUA IMMAGINE</p>
+                      <input
+                        type="file"
+                        accept="image/*"
+                        onChange={handleImageUpload}
+                        className="absolute inset-0 opacity-0 cursor-pointer"
+                      />
+                    </div>
+                  }
+                </>
               )}
             </div>
             <p className="mt-4 font-semibold">OGGETTO</p>
