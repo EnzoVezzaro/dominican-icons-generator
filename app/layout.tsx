@@ -7,7 +7,7 @@ import { SettingsProvider } from "@/hooks/use-settings"
 const inter = Inter({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
-  title: "Whisk - AI Image Generator",
+  title: "DomImagine - AI Image Generator",
   description: "Create magical images with AI",
     generator: 'v0.dev'
 }

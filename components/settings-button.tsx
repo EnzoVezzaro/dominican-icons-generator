@@ -49,7 +49,7 @@ export default function SettingsButton() {
       const dataStr = JSON.stringify(savedImages, null, 2)
       const dataUri = `data:application/json;charset=utf-8,${encodeURIComponent(dataStr)}`
 
-      const exportFileDefaultName = `whisk-images-${new Date().toISOString().slice(0, 10)}.json`
+      const exportFileDefaultName = `domimagine-images-${new Date().toISOString().slice(0, 10)}.json`
 
       const linkElement = document.createElement("a")
       linkElement.setAttribute("href", dataUri)

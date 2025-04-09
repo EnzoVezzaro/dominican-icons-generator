@@ -33,7 +33,7 @@ export default function ImageGallery({ images }: ImageGalleryProps) {
       const url = window.URL.createObjectURL(blob)
       const a = document.createElement("a")
       a.href = url
-      a.download = `whisk-image-${image.id}.png`
+      a.download = `domimagine-image-${image.id}.png`
       document.body.appendChild(a)
       a.click()
       window.URL.revokeObjectURL(url)

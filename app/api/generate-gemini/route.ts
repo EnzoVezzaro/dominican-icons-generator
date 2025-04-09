@@ -75,7 +75,7 @@ export async function POST(request: NextRequest) {
     // Since we can't directly use the uploaded image with Gemini's image generation yet,
     // we'll just generate an image based on the prompt
     try {
-      console.log('calling gemini...: ', contents)
+      console.log('calling gemini...')
       const response = await ai.models.generateContent({
         model: model === "imagen-3" ? "gemini-2.0-flash-exp-image-generation" : model,
         contents: contents,
@@ -91,7 +91,7 @@ export async function POST(request: NextRequest) {
         for (const part of response.candidates[0].content.parts) {
           // Based on the part type, either show the text or save the image
           if (part.text) {
-            console.log(part.text);
+            // console.log(part.text);
           } else if (part.inlineData && part.inlineData.data) {
             const imageData = part.inlineData.data;
             const mimeType = part.inlineData.mimeType;

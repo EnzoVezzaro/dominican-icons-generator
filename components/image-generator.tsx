@@ -125,19 +125,19 @@ export default function ImageGenerator() {
   return (
     <div className="flex flex-col items-center justify-center w-full">
       <div className="text-center mb-12">
-        <h2 className="text-5xl font-bold mb-4">CREA LA MAGIA</h2>
+        <h2 className="text-5xl font-bold mb-4">CREATE THE MAGIC</h2>
         <div className="flex items-center justify-center gap-4">
-          <span className="text-lg font-medium">USA MENO PROMPT</span>
-          <span className="text-lg font-medium">GIOCA DI PIÙ</span>
+          <span className="text-lg font-medium">USE LESS PROMPT</span>
+          <span className="text-lg font-medium">PLAY MORE</span>
         </div>
       </div>
 
       <div className="bg-yellow-200 rounded-xl p-8 w-full max-w-4xl mb-12 relative">
         <div className="text-center mb-6 flex justify-center items-center gap-2">
-          <h3 className="text-xl font-semibold">CREA UN</h3>
+          <h3 className="text-xl font-semibold">CREATE A</h3>
           <div className="relative inline-block">
             <Button variant="outline" className="bg-yellow-100 border-yellow-400">
-              ADESIVO
+              STICKER
             </Button>
           </div>
         </div>
@@ -147,7 +147,7 @@ export default function ImageGenerator() {
             <div className="w-full max-w-[150px]">
               <StyleSelector selectedStyle={selectedStyle} onSelectStyle={handleStyleSelect} />
             </div>
-            <p className="mt-4 font-semibold">STILE</p>
+            <p className="mt-4 font-semibold">STYLE</p>
           </div>
 
           <div className="flex items-center justify-center">
@@ -214,7 +214,7 @@ export default function ImageGenerator() {
                     (activeInput === null ||  activeInput === 'upload') &&
                     <div className="flex flex-col items-center justify-center p-4 text-center relative" style={{height: '50%', width: '100%'}}>
                       <Upload className="mb-2 text-white" />
-                      <p className="text-white text-xs">AGGIUNGI LA TUA IMMAGINE</p>
+                      <p className="text-white text-xs">ADD YOUR IMAGE</p>
                       <input
                         type="file"
                         accept="image/*"
@@ -226,7 +226,7 @@ export default function ImageGenerator() {
                 </>
               )}
             </div>
-            <p className="mt-4 font-semibold">OGGETTO</p>
+            <p className="mt-4 font-semibold">OBJECT</p>
           </div>
 
           <div className="md:col-span-3 flex justify-center mt-4">
@@ -262,7 +262,7 @@ export default function ImageGenerator() {
             disabled={isGenerating}
             className="bg-black text-white rounded-full px-6 py-3 hover:bg-gray-800 disabled:opacity-50"
           >
-            {isGenerating ? "GENERATING..." : "INIZIA DA ZERO"}
+            {isGenerating ? "GENERATING..." : "START FROM SCRATCH"}
           </Button>
         </div>
       </div>

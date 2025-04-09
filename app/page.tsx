@@ -8,8 +8,8 @@ export default function Home() {
       <div className="container mx-auto px-4 py-8">
         <header className="flex justify-between items-center mb-8">
           <div className="flex items-center gap-3">
-            <h1 className="text-3xl font-bold">Whisk</h1>
-            <span className="px-3 py-1 text-xs font-semibold bg-black text-white rounded-full">EXPERIMENT</span>
+            <h1 className="text-3xl font-bold">DomImagine</h1>
+            <span className="px-3 py-1 text-xs font-semibold bg-black text-white rounded-full">image generator</span>
           </div>
           <div className="flex items-center gap-4">
             <button className="px-4 py-2 border-2 border-black rounded-full font-medium">MY COLLECTION</button>
