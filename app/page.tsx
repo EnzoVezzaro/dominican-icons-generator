@@ -1,6 +1,7 @@
 import { Suspense } from "react"
 import ImageGenerator from "@/components/image-generator"
 import { Toaster } from "@/components/ui/toaster"
+import { Github } from "lucide-react"
 
 export default function Home() {
   return (
@@ -12,7 +13,9 @@ export default function Home() {
             <span className="px-3 py-1 text-xs font-semibold bg-black text-white rounded-full">image generator</span>
           </div>
           <div className="flex items-center gap-4">
-            <button className="px-4 py-2 border-2 border-black rounded-full font-medium">MY COLLECTION</button>
+            <button className="p-2 border-2 border-black rounded-full">
+              <Github className="w-5 h-5" />
+            </button>
           </div>
         </header>
 

@@ -38,7 +38,7 @@ const STYLES = [
 
 interface StyleSelectorProps {
   selectedStyle: string | null
-  onSelectStyle: (style: string) => void
+  onSelectStyle: (style: string | null) => void
 }
 
 function StyleSelector({ selectedStyle, onSelectStyle }: StyleSelectorProps) {
@@ -53,7 +53,13 @@ function StyleSelector({ selectedStyle, onSelectStyle }: StyleSelectorProps) {
       {selectedStyle ? (
         <div
           className={`aspect-square w-full ${selectedStyleObj?.color || "bg-teal-500"} rounded-md flex items-center justify-center overflow-hidden cursor-pointer border-4 border-white shadow-md`}
-          onClick={() => setShowAll(true)}
+          onClick={() => {
+            if (selectedStyle) {
+              onSelectStyle(null)
+            } else {
+              setShowAll(true)
+            }
+          }}
         >
           {selectedStyleObj && (
             <div className="flex flex-col items-center justify-center p-2">

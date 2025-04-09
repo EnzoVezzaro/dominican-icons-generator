@@ -37,7 +37,7 @@ export default function ImageGenerator() {
   }, [objectTypes.length]);
 
 
-  const handleStyleSelect = useCallback((styleId: string) => {
+  const handleStyleSelect = useCallback((styleId: string | null) => {
     setSelectedStyle(styleId);
   }, [])
 
