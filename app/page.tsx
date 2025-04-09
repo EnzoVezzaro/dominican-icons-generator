@@ -2,11 +2,13 @@ import { Suspense } from "react"
 import ImageGenerator from "@/components/image-generator"
 import { Toaster } from "@/components/ui/toaster"
 import { Github } from "lucide-react"
+import BackgroundImages from "@/components/background-images"
 
 export default function Home() {
   return (
     <main className="min-h-screen bg-yellow-300 relative overflow-hidden">
-      <div className="container mx-auto px-4 py-8">
+      <div className="container mx-auto px-4 py-8 relative">
+        <BackgroundImages />
         <header className="flex justify-between items-center mb-8">
           <div className="flex items-center gap-3">
             <h1 className="text-3xl font-bold">DomImagine</h1>

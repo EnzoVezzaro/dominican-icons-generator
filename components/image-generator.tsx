@@ -134,7 +134,7 @@ export default function ImageGenerator() {
   }, [isGenerating, inputText, uploadedImage, selectedStyle, generatedImage, handleGenerate, handleReset])
 
   return (
-    <div className="flex flex-col items-center justify-center w-full">
+    <div className="flex flex-col items-center justify-center max-w-screen-md mx-auto">
       <div className="text-center mb-12">
         <h2 className="text-5xl font-bold mb-4">CREATE THE MAGIC</h2>
         <div className="flex items-center justify-center gap-4">
