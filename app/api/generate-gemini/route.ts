@@ -15,24 +15,25 @@ export async function POST(request: NextRequest) {
     let prompt = ""
     let contents;
 
+    // Generate prompt based on style
+    switch (styleId) {
+      case "cartoon-cat":
+        prompt = "A cute cartoon cat style image"
+        break
+      case "pixel-art":
+        prompt = "A pixel art style image"
+        break
+      case "watercolor":
+        prompt = "A watercolor painting style image"
+        break
+      case "3d-render":
+        prompt = "A 3D rendered style image"
+        break
+      default:
+        prompt = "A stylized image"
+    }
+
     if (!textPrompt) {
-      // Generate prompt based on style
-      switch (styleId) {
-        case "cartoon-cat":
-          prompt = "A cute cartoon cat style image"
-          break
-        case "pixel-art":
-          prompt = "A pixel art style image"
-          break
-        case "watercolor":
-          prompt = "A watercolor painting style image"
-          break
-        case "3d-render":
-          prompt = "A 3D rendered style image"
-          break
-        default:
-          prompt = "A stylized image"
-      }
 
       let base64Data = uploadedImage;
       let mimeType = 'image/png'; // Default MIME type
@@ -66,8 +67,7 @@ export async function POST(request: NextRequest) {
         },
       ];
     } else if (textPrompt) {
-      prompt = textPrompt;
-      contents = [{ text: prompt }];
+      contents = [{ text: `Make ${textPrompt} image with the following instructions: ${prompt}.` }];
     } else {
       return NextResponse.json({ error: "Uploaded image or text prompt is required" }, { status: 400 })
     }
@@ -84,7 +84,7 @@ export async function POST(request: NextRequest) {
         },
       });
 
-      // console.log('response: ', JSON.stringify(response));
+      console.log('response: ', contents);
 
       let imageUrl = null;
       if (response.candidates && response.candidates[0] && response.candidates[0].content && response.candidates[0].content.parts) {

@@ -70,11 +70,14 @@ function StyleSelector({ selectedStyle, onSelectStyle }: StyleSelectorProps) {
               className="p-2 cursor-pointer transition-all hover:border-gray-300"
               onClick={() => onSelectStyle(style.id)}
             >
-              <div
-                className={`aspect-square w-full ${style.color} rounded-md flex items-center justify-center overflow-hidden`}
-              >
+                <div
+                className={`aspect-square w-full ${style.color} rounded-md flex flex-col items-center justify-center overflow-hidden`}
+                >
                 {style.icon}
-              </div>
+                <span className="text-white">
+                  {style.name}
+                </span>
+                </div>
             </Card>
           ))}
 
