@@ -8,16 +8,13 @@ export default function Home() {
   return (
     <main className="min-h-screen bg-yellow-300 relative overflow-hidden">
       <div className="container mx-auto px-4 py-8 relative">
-        <BackgroundImages />
-        <header className="flex justify-between items-center mb-8">
-          <div className="flex items-center gap-3">
-            <h1 className="text-3xl font-bold">DomImagine</h1>
-            <span className="px-3 py-1 text-xs font-semibold bg-black text-white rounded-full">image generator</span>
-          </div>
+        <header className="flex justify-end items-center mb-8">
           <div className="flex items-center gap-4">
-            <button className="p-2 border-2 border-black rounded-full">
+            <a 
+              className="fixed bottom-6 left-5 h-12 w-12 rounded-full bg-white shadow-lg border-2 border-black flex items-center justify-center"
+              href="https://github.com/EnzoVezzaro/dominican-icons-generator" target="_blank" rel="noopener noreferrer">
               <Github className="w-5 h-5" />
-            </button>
+            </a>
           </div>
         </header>
 

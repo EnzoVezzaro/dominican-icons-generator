@@ -5,7 +5,7 @@ import { PlusIcon, EqualIcon as Equals, RefreshCw, Upload, Text } from "lucide-r
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import StyleSelector from "@/components/style-selector"
-import { useToast } from "@/components/ui/use-toast"
+import { useToast } from "@/hooks/use-toast"
 import { useSettings } from "@/hooks/use-settings"
 import { useLocalStorage } from "@/hooks/use-local-storage"
 import SettingsButton from "@/components/settings-button"
@@ -70,11 +70,12 @@ export default function ImageGenerator() {
         title: "Missing selection",
         description: "Please select a style and provide an image or text",
         variant: "destructive",
-      })
-      return;
+      });
+      return; // Ensure this return statement is properly executed
     }
 
     if (!settings.apiKey) {
+      console.log('here: ', selectedStyle, uploadedImage, activeInput, inputText);
       toast({
         title: "API Key Required",
         description: "Please add an API key in settings",
@@ -82,6 +83,8 @@ export default function ImageGenerator() {
       })
       return
     }
+
+    console.log('here: ', selectedStyle, uploadedImage, activeInput, inputText);
 
     setIsGenerating(true);
     try {
@@ -125,7 +128,6 @@ export default function ImageGenerator() {
 
   const handleAction = useCallback(() => {
     if (isGenerating) return
-
     if ((uploadedImage || inputText) && selectedStyle && !generatedImage) {
       handleGenerate()
     } else {
@@ -135,12 +137,9 @@ export default function ImageGenerator() {
 
   return (
     <div className="flex flex-col items-center justify-center max-w-screen-md mx-auto">
-      <div className="text-center mb-12">
-        <h2 className="text-5xl font-bold mb-4">CREATE THE MAGIC</h2>
-        <div className="flex items-center justify-center gap-4">
-          <span className="text-lg font-medium">USE LESS PROMPT</span>
-          <span className="text-lg font-medium">PLAY MORE</span>
-        </div>
+      <div className="text-center mb-12 mt-6">
+        <span className="px-3 py-1 text-xs font-semibold bg-black text-white rounded-full">image generator</span>
+        <h2 className="text-5xl font-bold mb-4 mt-2">UNLEASH YOUR CREATIVITY</h2>
       </div>
 
       <div className="bg-yellow-200 rounded-xl p-8 w-full max-w-4xl mb-12 relative">
@@ -247,7 +246,7 @@ export default function ImageGenerator() {
                 </>
               )}
             </div>
-            <p className="mt-4 font-semibold">OBJECT</p>
+            <p className="mt-4 font-semibold">REFERENCE</p>
           </div>
 
           <div className="md:col-span-3 flex justify-center mt-4">
@@ -277,19 +276,23 @@ export default function ImageGenerator() {
           </div>
         </div>
 
-        <div className="flex justify-center mt-8">
+        <div className="flex justify-center mt-8 flex-col w-full items-center">
           <Button
             onClick={handleAction}
             disabled={isGenerating}
-            className="bg-black text-white rounded-full px-6 py-3 hover:bg-gray-800 disabled:opacity-50"
+            className="bg-black text-white rounded-full px-6 py-3 hover:bg-gray-800 disabled:opacity-50 w-60 mb-4"
           >
-            {isGenerating ? "GENERATING..." : "START FROM SCRATCH"}
+            {isGenerating ? "GENERATING..." : "CREATE IMAGE ✨"}
           </Button>
+          <div className="text-black text-xs">
+            Inspired by <a href="https://labs.google/fx/it/tools/whisk" target="_blank" rel="noopener noreferrer">Google Whisk</a>
+          </div>
         </div>
       </div>
 
       <SettingsButton />
       <ImageGallery images={savedImages} />
+
     </div>
   )
 }

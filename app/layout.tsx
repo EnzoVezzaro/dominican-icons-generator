@@ -3,13 +3,13 @@ import type { Metadata } from "next"
 import { Inter } from "next/font/google"
 import "./globals.css"
 import { SettingsProvider } from "@/hooks/use-settings"
+import { ToastProvider, ToastViewport } from "@/components/ui/toast"
 
 const inter = Inter({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
   title: "DomImagine - AI Image Generator",
-  description: "Create magical images with AI",
-    generator: 'v0.dev'
+  description: "Create magical images with AI"
 }
 
 export default function RootLayout({
@@ -20,11 +20,13 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <SettingsProvider>{children}</SettingsProvider>
+        <SettingsProvider>
+          <ToastProvider>
+            {children}
+            <ToastViewport />
+          </ToastProvider>
+        </SettingsProvider>
       </body>
     </html>
   )
 }
-
-
-import './globals.css'

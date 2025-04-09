@@ -20,10 +20,10 @@ interface ImageGalleryProps {
 
 export default function ImageGallery({ images }: ImageGalleryProps) {
   const [open, setOpen] = useState(false)
-  const { removeItem } = useLocalStorage<ImageData>("saved-images", [])
+  const { removeItem } = useLocalStorage<ImageData[]>("saved-images", [])
 
   const handleDeleteImage = (id: string) => {
-    removeItem((items) => items.filter((item) => item.id !== id))
+    removeItem((items) => items?.filter((item) => item.id !== id))
   }
 
   const handleDownloadImage = async (image: ImageData) => {
@@ -74,7 +74,7 @@ export default function ImageGallery({ images }: ImageGalleryProps) {
                     className="w-full h-full object-cover"
                   />
                 </div>
-                <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-50 transition-all flex items-center justify-center opacity-0 group-hover:opacity-100">
+                <div className="absolute inset-0 transition-all flex items-center justify-center opacity-0 hover:opacity-100">
                   <div className="flex gap-2">
                     <Button size="icon" variant="destructive" onClick={() => handleDeleteImage(image.id)}>
                       <Trash2 className="h-4 w-4" />
