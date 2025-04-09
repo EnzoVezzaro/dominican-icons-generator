@@ -1,15 +1,12 @@
 "use client"
 
 import { useLocalStorage } from "@/hooks/use-local-storage"
+import { useState } from "react"
 import type { ImageData } from "@/types"
 
 export default function BackgroundImages() {
   const { items: savedImages } = useLocalStorage<ImageData[]>("saved-images", [])
-
-  console.log('saved images: ', savedImages);
-  
-  console.log('Saved images count:', savedImages.length)
-  console.log('Sample image URL:', savedImages[0]?.url)
+  const [isHovering, setIsHovering] = useState<number | null>(null)
   
   if (savedImages.length === 0) {
     console.log('No saved images to display')
@@ -17,36 +14,50 @@ export default function BackgroundImages() {
   }
 
   return (
-    <div className="absolute inset-0 overflow-hidden pointer-events-none z-9">
+    <div className="absolute inset-0 overflow-hidden z-10">
       {savedImages.map((image, index) => {
         // Stack from bottom with angles
-        const angle = index * 15 // 15 degree increment per image
+        const angle = index * 15 - 15 // 15 degree increment per image, centered
         const left = `${10 + index * 8}%` // Horizontal spacing
-        const top = '80%' // Start from bottom
+        const bottom = `${-3}%` // Position at the bottom with consistent base
         
+        // Animation class for the currently hovered image
+        const isHovered = isHovering === index
+
         return (
-          <img
+          <div
             key={`bg-${image.id}`}
-            src={image.url}
-            alt=""
-            className="absolute"
+            className="absolute cursor-pointer"
             style={{
-              transform: `rotate(${angle}deg)`,
               left,
-              top,
+              bottom,
               width: '200px',
               height: '300px',
-              objectFit: 'cover',
-              zIndex: 9,
-              border: '4px solid white',
-              borderRadius: '8px',
-              boxShadow: '0 4px 8px rgba(0,0,0,0.2)',
-              transition: 'all 0.3s ease',
-              opacity: 1
+              zIndex: isHovered ? 20 : 10 + index,
+              transform: `rotate(${angle}deg)`,
+              transition: 'transform 0.5s ease, translate 0.5s ease',
+              translate: isHovered ? '0 -40px' : '0 0',
+              animation: isHovered ? 'floatUpDown 3s ease-in-out infinite' : 'none',
             }}
-          />
+            onMouseEnter={() => setIsHovering(index)}
+            onMouseLeave={() => setIsHovering(null)}
+          >
+            <img
+              src={image.url}
+              alt=""
+              className="w-full h-full object-cover rounded-lg border-4 border-white shadow-lg"
+            />
+          </div>
         )
       })}
+      
+      {/* Add the floating animation keyframes */}
+      <style jsx global>{`
+        @keyframes floatUpDown {
+          0%, 100% { translate: 0 -40px; }
+          50% { translate: 0 -60px; }
+        }
+      `}</style>
     </div>
   )
 }
