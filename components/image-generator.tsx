@@ -21,7 +21,7 @@ export default function ImageGenerator() {
   const [isGenerating, setIsGenerating] = useState(false)
   const { toast } = useToast()
   const { settings } = useSettings()
-  const { items: savedImages, addItem: saveImage } = useLocalStorage<ImageData>("saved-images", [])
+  const { items: savedImages, addItem: saveImage } = useLocalStorage<ImageData[]>("saved-images", [])
 
   const handleStyleSelect = useCallback((styleId: string) => {
     setSelectedStyle(styleId)
@@ -119,7 +119,7 @@ export default function ImageGenerator() {
   }, [isGenerating, uploadedImage, selectedStyle, generatedImage, handleGenerate, handleReset])
 
   return (
-    <div className="flex flex-col items-center justify-center">
+    <div className="flex flex-col items-center justify-center w-full">
       <div className="text-center mb-12">
         <h2 className="text-5xl font-bold mb-4">CREA LA MAGIA</h2>
         <div className="flex items-center justify-center gap-4">
@@ -162,7 +162,7 @@ export default function ImageGenerator() {
                   className="w-full h-full object-cover"
                 />
               ) : (
-                <div className="flex flex-col items-center justify-center p-4 text-center">
+                <div className="flex flex-col items-center justify-center p-4 text-center relative">
                   <Upload className="mb-2 text-white" />
                   <p className="text-white text-sm">AGGIUNGI LA TUA IMMAGINE</p>
                   <input
