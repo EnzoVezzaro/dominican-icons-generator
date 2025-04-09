@@ -13,7 +13,7 @@ export async function POST(request: NextRequest) {
     const ai = new GoogleGenAI({ apiKey: apiKey });
 
     if (!uploadedImage) {
-      return NextResponse.json({ error: "Uploaded image is required" }, { status: 400 })
+      return NextResponse.json({ error: "Uploaded image or text prompt is required" }, { status: 400 })
     }
 
     // Generate prompt based on style

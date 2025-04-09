@@ -76,7 +76,7 @@ export default function ImageGenerator() {
     try {
       const input = activeInput === "text" ? inputText : (uploadedImage || "");
       const result = await generateImage(selectedStyle, input, settings);
-      setGeneratedImage(result.imageUrl);
+      setGeneratedImage(result.imageUrl); 
     } catch (error) {
       toast({
         title: "Generation failed",
@@ -115,14 +115,12 @@ export default function ImageGenerator() {
   const handleAction = useCallback(() => {
     if (isGenerating) return
 
-    if (uploadedImage && selectedStyle && !generatedImage) {
+    if ((uploadedImage || inputText) && selectedStyle && !generatedImage) {
       handleGenerate()
     } else {
       handleReset()
     }
-  }, [isGenerating, uploadedImage, selectedStyle, generatedImage, handleGenerate, handleReset])
-
-  console.log('active: ', activeInput);
+  }, [isGenerating, inputText, uploadedImage, selectedStyle, generatedImage, handleGenerate, handleReset])
 
   return (
     <div className="flex flex-col items-center justify-center w-full">
@@ -158,8 +156,8 @@ export default function ImageGenerator() {
 
           <div className="flex flex-col items-center">
             <div
-              className={`w-full aspect-square bg-red-500 flex items-center justify-center overflow-hidden border-2 border-dashed border-gray-400`}
-              style={{ minHeight: "150px", maxWidth: "150px", flexDirection: 'column' }}
+              className={`user-actions-container w-full aspect-square bg-red-500 flex flex-col items-center justify-center overflow-hidden border-2 border-dashed border-gray-400 rounded-xl p-4`}
+              style={{ minHeight: "150px", maxWidth: "150px"}}
             >
               {uploadedImage ? (
                 <img
@@ -171,27 +169,52 @@ export default function ImageGenerator() {
                 <>
                   {
                     (activeInput === null || activeInput === 'text') &&
-                    <Textarea
-                      placeholder="Enter your text"
-                      className={`w-full h-32`}
-                      onClick={() => setActiveInput("text")}
-                      value={inputText}
-                      onChange={(e) => {
-                        if (!e.target.value){
-                          setActiveInput(null)
-                          setInputText(e.target.value)
-                        } else {
-                          setActiveInput("text")
-                          setInputText(e.target.value)
-                        }
-                      }}
-                    />
+                    <>
+                      <Textarea
+                        placeholder="ENTER YOUR PROMPT"
+                        className={`w-full resize-none border-none focus:ring-0 focus:outline-none focus:border-none placeholder-white`}
+                        style={{
+                          height: '50%', 
+                          minHeight: activeInput === 'text' ? '100%' : '50%',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          color: '#fff',
+                          background: 'transparent',
+                          textAlign: 'center', 
+                          paddingTop: '10px',
+                          fontSize: activeInput === 'text' ? '1rem' : '0.75rem',
+                          outline: 'none',
+                          boxShadow: 'none',
+                        }}
+                        onClick={() => setActiveInput("text")}
+                        onBlur={() => {
+                          if (!inputText) {
+                            setActiveInput(null);
+                          }
+                        }}
+                        value={inputText}
+                        onChange={(e) => {
+                          if (!e.target.value){
+                            setActiveInput(null)
+                            setInputText(e.target.value)
+                          } else {
+                            setActiveInput("text")
+                            setInputText(e.target.value)
+                          }
+                        }}
+                      />
+                      {
+                        activeInput === null &&
+                        <div className="dashed-divider w-full border-b-2 border-dashed border-gray-400 my-2" />
+                      }
+                    </>
                   }
                   {
                     (activeInput === null ||  activeInput === 'upload') &&
-                    <div className="flex flex-col items-center justify-center p-4 text-center relative">
-                      <Upload className="mb-2 text-white" /> 
-                      <p className="text-white text-sm">AGGIUNGI LA TUA IMMAGINE</p>
+                    <div className="flex flex-col items-center justify-center p-4 text-center relative" style={{height: '50%', width: '100%'}}>
+                      <Upload className="mb-2 text-white" />
+                      <p className="text-white text-xs">AGGIUNGI LA TUA IMMAGINE</p>
                       <input
                         type="file"
                         accept="image/*"

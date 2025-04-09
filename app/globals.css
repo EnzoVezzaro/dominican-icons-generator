@@ -54,3 +54,7 @@
 body {
   @apply bg-background text-foreground;
 }
+
+.user-actions-container textarea::placeholder {
+  color: white;
+}
