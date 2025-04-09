@@ -1,11 +1,9 @@
 "use client"
 
-import type React from "react"
-
-import { useState, useCallback } from "react"
-import { PlusIcon, EqualIcon as Equals, RefreshCw, Upload, Text } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { Textarea } from "@/components/ui/textarea"
+import React, { useState, useCallback, useEffect } from "react"; // Import useEffect
+import { PlusIcon, EqualIcon as Equals, RefreshCw, Upload, Text } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
 import StyleSelector from "@/components/style-selector"
 import { useToast } from "@/components/ui/use-toast"
 import { useSettings } from "@/hooks/use-settings"
@@ -19,15 +17,28 @@ export default function ImageGenerator() {
   const [selectedStyle, setSelectedStyle] = useState<string | null>(null)
   const [uploadedImage, setUploadedImage] = useState<string | null>(null)
   const [generatedImage, setGeneratedImage] = useState<string | null>(null)
-  const [isGenerating, setIsGenerating] = useState(false)
+  const [isGenerating, setIsGenerating] = useState(false);
   const [activeInput, setActiveInput] = useState<"text" | "upload" | null>(null);
   const [inputText, setInputText] = useState<string>("");
-  const { toast } = useToast()
-  const { settings } = useSettings()
-  const { items: savedImages, addItem: saveImage } = useLocalStorage<ImageData[]>("saved-images", [])
+  const { toast } = useToast();
+  const { settings } = useSettings();
+  const { items: savedImages, addItem: saveImage } = useLocalStorage<ImageData[]>("saved-images", []);
+
+  // State for scrolling text effect
+  const objectTypes = ["STICKERS", "PINS", "POSTS", "PROFILE"];
+  const [currentTypeIndex, setCurrentTypeIndex] = useState(0);
+
+  useEffect(() => {
+    const intervalId = setInterval(() => {
+      setCurrentTypeIndex((prevIndex) => (prevIndex + 1) % objectTypes.length);
+    }, 2000); // Change word every 2 seconds
+
+    return () => clearInterval(intervalId); // Cleanup interval on unmount
+  }, [objectTypes.length]);
+
 
   const handleStyleSelect = useCallback((styleId: string) => {
-    setSelectedStyle(styleId)
+    setSelectedStyle(styleId);
   }, [])
 
   const handleImageUpload = useCallback(
@@ -135,10 +146,20 @@ export default function ImageGenerator() {
       <div className="bg-yellow-200 rounded-xl p-8 w-full max-w-4xl mb-12 relative">
         <div className="text-center mb-6 flex justify-center items-center gap-2">
           <h3 className="text-xl font-semibold">CREATE A</h3>
-          <div className="relative inline-block">
-            <Button variant="outline" className="bg-yellow-100 border-yellow-400">
-              STICKER
-            </Button>
+          {/* Scrolling Text Effect - Adjusted */}
+          <div className="relative inline-flex items-center justify-center h-10 w-36 overflow-hidden bg-yellow-100 border border-yellow-400 rounded px-4">
+            {objectTypes.map((type, index) => (
+              <span
+                key={type}
+                className="absolute w-full text-center transition-transform duration-500 ease-in-out font-medium"
+                style={{
+                  transform: `translateY(${(index - currentTypeIndex) * 100}%)`,
+                  // Ensure only the current item is fully visible, others are moved out
+                }}
+              >
+                {type}
+              </span>
+            ))}
           </div>
         </div>
 
